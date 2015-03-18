@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<extension version="2.5" type="plugin" group="vmshipment" method="upgrade">
+    <name>Сервис доставки DDelivery</name>
+    <creationDate>October 10 2014</creationDate>
+    <author>DDelivery</author>
+    <authorUrl>http://ddelivery.ru</authorUrl>
+    <copyright>Copyright (C) 2004-2014 DDelivery. All rights reserved.</copyright>
+    <license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
+    <version>2.9.9e</version>
+    <description>VMSHIPMENT_DDELIVERY_PLUGIN_DESC</description>
+    <languages>
+        <language tag="en-GB">en-GB.plg_vmshipment_ddelivery.ini</language>
+        <language tag="en-GB">en-GB.plg_vmshipment_ddelivery.sys.ini</language>
+    </languages>
+    <files>
+        <filename plugin="ddelivery">ddelivery.php</filename>
+        <filename>index.html</filename>
+        <folder>ddelivery</folder>
+        <folder>elements</folder>
+    </files>
+    <!--
+    addpath="/administrator/components/com_virtuemart/elements"
+    -->
+    <params addpath="/plugins/vmshipment/ddelivery/elements">
+		<param name="api" type="text" default="" size="40"
+			label="API ключ"
+			description="Обязательное поле, по которому модуль авторизуется на сервере" />
+        <param name="workmode" type="list" default="test"
+			label="Режим работы"
+			description="
+			Для отладки работы модуля, используйте, пожалуйста, режим Тестирование
+			">
+			<option value="test">Тестирование</option>
+			<option value="work">Основной</option>
+		</param>
+        <param name="services" type="list" default="selfandcurier"
+			label="Услуги"
+			description="
+			Данное поле влияет какие части модуля будут доступны пользователям
+			">
+			<option value="self">Самовывоз</option>
+			<option value="curier">Курьерская доставка</option>
+			<option value="selfandcurier">Самовывоз + Курьерская доставка</option>
+			
+		</param>
+        <param name="insur" type="text" default="100" size="6"
+			label="Какой % от стоимости товара страхуется"
+			description="Вы можете снизить оценучную стоимость для уменьшения стоимости доставки 
+            за счет снижения размера страховки." />
+        <!--
+        <param name="ocencost" type="text" default="100" size="6"
+        			label="Оценочная стоимость в %"
+        			description="Обязательное поле, по умолчанию равно 100" />
+        -->
+            
+        <param name="ispaypickup" type="checkbox" label="Выводить стоимость забора в цене доставки" value="1"/>
+        
+        <param type="spacer" default="&lt;h2&gt;Габариты по умолчанию&lt;/h2&gt;" />    
+		<param name="default_width" type="text" default="10" size="6"
+			label="Ширина по умолчанию (см.)"
+			description="Обязательное поле" />
+		<param name="default_height" type="text" default="10" size="6"
+			label="Длина по умолчанию (см.)"
+			description="Обязательное поле" />
+		<param name="default_length" type="text" default="10" size="6"
+			label="Высота по умолчанию (см.)"
+			description="Обязательное поле" />
+		<param name="default_weight" type="text" default="1" size="6"
+			label="Вес по умолчанию (кг.)"
+			description="Обязательное поле" />
+            
+		<param type="spacer" default="&lt;h2&gt;Сопоставление полей&lt;/h2&gt;" />	
+		<param name="last_name" type="fiomerge" default="last_name"
+			label="Фамилия"
+			description="Позволяет свести переменные" />
+        
+        <param name="first_name" type="fiomerge" default="first_name"
+			label="Имя"
+			description="Позволяет свести переменные" />
+        
+        <param name="email" type="fiomerge" default="email"
+			label="Email"
+			description="Позволяет свести переменные" />
+            	
+		<param name="phone" type="fiomerge" default="phone_1"
+			label="Телефон"
+			description="Позволяет свести переменные" />
+		
+        <param name="city" type="fiomerge" default="city"
+			label="Город"
+			description="Позволяет свести переменные" />
+            
+        <param name="address" type="fiomerge" default="address_1"
+			label="Улица"
+			description="Позволяет свести переменные" />
+        
+        <param name="house" type="fiomerge" default="vm_house"
+			label="Дом"
+			description="Позволяет свести переменные" />
+        
+        <param name="corpus" type="fiomerge" default="vm_corpus"
+			label="Корпус"
+			description="Позволяет свести переменные" />
+            
+        <param name="flat" type="fiomerge" default="vm_flat"
+			label="Квартира"
+			description="Позволяет свести переменные" />
+        
+        <param type="spacer" default="&lt;h2&gt;Статусов&lt;/h2&gt;" />
+        
+		<param name="status_confirmed" type="status" default="C"
+			label='Статус для отправки на сервер DD со стартовым статусом "Подтверждена"'
+			description='Выберите статус, при котором заявки из вашей системы будут уходить в DDelivery со статусом "Подтверждена". Помните, что отправка означает готовность отгрузить заказ на следующий рабочий день.' />
+        <param name="status_in_progress" type="status" default="C"
+			label='Статус для отправки на сервер DD со стартовым статусом "В обработке"'
+			description='Выберите статус, при котором заявки из вашей системы будут уходить в DDelivery со статусом "В обработке".' />
+        <param name="status_in_stock" type="status" default="C"
+			label='Статус DD "На складе ИМ"'
+			description='Выберите статус заказа в интернет-магазине, соответствующий статусу DD "На складе Интернет Магазина".' />
+        <param name="status_in_way" type="status" default="C"
+			label='Статус DD "Заказ в пути"'
+			description='Выберите статус заказа в интернет-магазине, соответствующий статусу DD "Заказ в пути".' />
+        <param name="status_delivered" type="status" default="C"
+			label='Статус DD "Заказ доставлен"'
+			description='Выберите статус заказа в интернет-магазине, соответствующий статусу DD "Заказ доставлен".' />
+        <param name="status_received" type="status" default="C"
+			label='Статус DD "Заказ получен"'
+			description='Выберите статус заказа в интернет-магазине, соответствующий статусу DD "Заказ получен".' />
+        <param name="status_return" type="status" default="C"
+			label='Статус DD "Возврат заказа"'
+			description='Выберите статус заказа в интернет-магазине, соответствующий статусу DD "Возврат заказа".' />
+        <param name="status_customer_returned" type="status" default="C"
+			label='Статус DD "Клиент вернул заказ"'
+			description='Выберите статус заказа в интернет-магазине, соответствующий статусу DD "Клиент вернул заказ".' />
+        <param name="status_partial_refund" type="status" default="C"
+			label='Статус DD "Частичный возврат заказа"'
+			description='Выберите статус заказа в интернет-магазине, соответствующий статусу DD "Частичный возврат заказа".' />    
+        <param name="status_cancel" type="status" default="C"
+			label='Статус DD "Отмена"'
+			description='Выберите статус заказа в интернет-магазине, соответствующий статусу DD "Отмена".' />
+        <param name="status_returned_mi" type="status" default="C"
+			label='Статус DD "Возвращен в ИМ"'
+			description='Выберите статус заказа в интернет-магазине, соответствующий статусу DD "Возвращен в ИМ".' />
+        <param name="status_waiting" type="status" default="C"
+			label='Статус DD "Ожидание"'
+			description='Выберите статус заказа в интернет-магазине, соответствующий статусу DD "Ожидание".' />       
+            
+		<param type="spacer" default="&lt;h2&gt;Продукция&lt;/h2&gt;" />
+		
+		<param name="widthmerge" type="productfield" default="product_width"
+			label="Ширина"
+			description="Позволяет свести переменные" />
+		<param name="heightmerge" type="productfield" default="product_height"
+			label="Высота"
+			description="Позволяет свести переменные" />
+		<param name="lengthmerge" type="productfield" default="product_length"
+			label="Длина"
+			description="Позволяет свести переменные" />
+		<param name="weightmerge" type="productfield" default="product_weight"
+			label="Вес"
+			description="Позволяет свести переменные" />
+				
+	<param type="spacer" default="&lt;h2&gt;Настройки округления цены доставки&lt;/h2&gt;" />
+        <param name="aroundpricetype" type="list" default="round"
+			label="Округление цены доставки для клиента"
+			description="
+			Позволяет выбрать тип округления цены доставки для клиента
+			">
+			
+			<option value="round">Математическое округление</option>
+			<option value="floor">Вниз</option>
+			<option value="ceil">Вверх</option>
+			
+		</param>
+        
+        <param name="aroundpricestep" type="text" default="0.5" size="6"
+			label="Шаг округления цены доставки"
+			description="" />
+            
+	<param type="spacer" default="&lt;h2&gt;Настройка цены доставки&lt;/h2&gt;" />
+		<param name="cond1" type="text" default="" size="6"
+			label="Интервал #1 от:"
+			description="">
+		</param>
+		<param name="cond1_2" type="text" default="" size="6"
+			label="до:"
+			description="">
+		</param>
+		
+		<param name="condres1" type="list" default="client"
+			label="Оплата доставки:"
+			description="(Все оплачивает магазин(высвечиваем пользователю цену равную нулю, магазин оплачивает процент (умножаем серверную цену на значение процента),  магазин оплачивает фиксированную цену (серверная цена уменьшается на величину фиксированной цены),  все оплачивает клиент (высвечиваем цену, получаемую с сервера)">
+			<option value="allmag">Все оплачивает магазин</option>
+			<option value="magpercent">Магазин оплачивает процент</option>
+			<option value="fix">Магазин оплачивает фиксированную цену</option>
+			<option value="client">Все оплачивает клиент</option>
+		</param>
+		<param name="condperbymag1" type="text" default="" size="6"
+			label="Процент или руб. оплачиваемая магазином"
+			description="Числовое поле" />
+		<param name="@spacer" type="spacer" default="" label="asd" description="" />
+		<param name="cond2" type="text" default="" size="6"
+			label="Интервал #2 от:"
+			description="">
+		</param>
+		<param name="cond2_2" type="text" default="" size="6"
+			label="до:"
+			description="">
+		</param>
+		
+		<param name="condres2" type="list" default="client"
+			label="Оплата доставки:"
+			description="(Все оплачивает магазин(высвечиваем пользователю цену равную нулю, магазин оплачивает процент (умножаем серверную цену на значение процента),  магазин оплачивает фиксированную цену (серверная цена уменьшается на величину фиксированной цены),  все оплачивает клиент (высвечиваем цену, получаемую с сервера)">
+			<option value="allmag">Все оплачивает магазин</option>
+			<option value="magpercent">Магазин оплачивает процент</option>
+			<option value="fix">Магазин оплачивает фиксированную цену</option>
+			<option value="client">Все оплачивает клиент</option>
+		</param>
+		<param name="condperbymag2" type="text" default="" size="6"
+			label="Процент или руб. оплачиваемая магазином"
+			description="Числовое поле" />
+		<param name="@spacer" type="spacer" default="" label="asd" description="" />
+		<param name="cond3" type="text" default="" size="6"
+			label="Интервал #3 от:"
+			description="">
+		</param>
+		<param name="cond3_2" type="text" default="" size="6"
+			label="до:"
+			description="">
+		</param>
+		
+		<param name="condres3" type="list" default="client"
+			label="Оплата доставки:"
+			description="(Все оплачивает магазин(высвечиваем пользователю цену равную нулю, магазин оплачивает процент (умножаем серверную цену на значение процента),  магазин оплачивает фиксированную цену (серверная цена уменьшается на величину фиксированной цены),  все оплачивает клиент (высвечиваем цену, получаемую с сервера)">
+			<option value="allmag">Все оплачивает магазин</option>
+			<option value="magpercent">Магазин оплачивает процент</option>
+			<option value="fix">Магазин оплачивает фиксированную цену</option>
+			<option value="client">Все оплачивает клиент</option>
+		</param>
+		<param name="condperbymag3" type="text" default="" size="6"
+			label="Процент или руб. оплачиваемая магазином"
+			description="Числовое поле" />
+		<param type="spacer" default="&lt;h3&gt;Выберите транспортные компании, которые будут доступными для ваших клиентов&lt;/h3&gt;" />	
+		<param type="spacer" default="&lt;h4&gt;Самовывоз&lt;/h4&gt;" />
+        
+        
+		<param name="pvz_33" type="checkbox" label="Aplix:" value="33" default="checked" />
+		<param name="pvz_35" type="checkbox" label="Aplix DPD Consumer:" value="35" default="checked"/>
+		<param name="pvz_36" type="checkbox" label="Aplix DPD parcel:" value="36" default="checked"/>
+		<param name="pvz_48" type="checkbox" label="Aplix IML курьерская доставка:" value="48" default="checked"/>
+		<param name="pvz_37" type="checkbox" label="Aplix IML самовывоз:" value="37" default="checked"/>
+		<param name="pvz_38" type="checkbox" label="Aplix PickPoint:" value="38" default="checked"/>
+		<param name="pvz_39" type="checkbox" label="Aplix Qiwi:" value="39" default="checked"/>
+		<param name="pvz_45" type="checkbox" label="Aplix курьерская доставка:" value="45" default="checked"/>
+		<param name="pvz_40" type="checkbox" label="Aplix СДЭК:" value="40" default="checked"/>
+        
+		<param name="pvz_4" type="checkbox" label="Boxberry:" value="4" default="checked"/>
+		<param name="pvz_21" type="checkbox" label="Boxberry Express" value="21" default="checked"/>
+
+        <param name="pvz_29" type="checkbox" label="DPD Classic:" value="29" default="checked"/>
+		<param name="pvz_27" type="checkbox" label="DPD Economy:" value="27" default="checked"/>
+		<param name="pvz_23" type="checkbox" label="DPD Consumer:" value="23" default="checked"/>
+		<param name="pvz_28" type="checkbox" label="DPD Express:" value="28" default="checked"/>
+		<param name="pvz_20" type="checkbox" label="DPD Parcel:" value="20" default="checked"/>
+		<param name="pvz_32" type="checkbox" label="DPD_pick:" value="32" default="checked"/>
+
+        <param name="pvz_30" type="checkbox" label="EMS:" value="30" default="checked"/>
+        <param name="pvz_51" type="checkbox" label="EMS Почта России:" value="51" default="checked"/>
+        <param name="pvz_52" type="checkbox" label="ЕКБ-доставка забор:" value="52" default="checked"/>
+        <param name="pvz_53" type="checkbox" label="ЕКБ-доставка курьер:" value="53" default="checked"/>
+
+		<param name="pvz_31" type="checkbox" label="Grastin:" value="31" default="checked"/>
+		<param name="pvz_11" type="checkbox" label="Hermes:" value="11" default="checked"/>
+        
+        <param name="pvz_16" type="checkbox" label="IM Logistics Пушкинская:" value="16" default="checked"/>
+		<param name="pvz_22" type="checkbox" label="IM Logistics Экспресс:" value="22" default="checked"/>
+        
+		<param name="pvz_49" type="checkbox" label="IML Забор:" value="49" default="checked"/>
+		<param name="pvz_43" type="checkbox" label="IML курьерская доставка:" value="43" default="checked"/>
+		<param name="pvz_42" type="checkbox" label="IML самовывоз:" value="42" default="checked"/>
+		<param name="pvz_17" type="checkbox" label="IMLogistics:" value="17" default="checked"/>
+        
+        <param name="pvz_34" type="checkbox" label="Lenod:" value="34" default="checked"/>
+        <param name="pvz_46" type="checkbox" label="LENOD курьерская служба:" value="46" default="checked"/>
+		
+		<param name="pvz_3" type="checkbox" label="Logibox:" value="3" default="checked"/>
+		<param name="pvz_14" type="checkbox" label="Maxima Express:" value="14" default="checked"/>
+        
+		<param name="pvz_1" type="checkbox" label="PickPoint:" value="1" default="checked"/>
+		<param name="pvz_7" type="checkbox" label="QIWI Post:" value="7" default="checked"/>
+        
+		<param name="pvz_47" type="checkbox" label="TelePost:" value="47" default="checked"/>
+		<param name="pvz_41" type="checkbox" label="Кит:" value="41" default="checked"/>
+		<param name="pvz_13" type="checkbox" label="КТС:" value="13" default="checked"/>
+		<param name="pvz_44" type="checkbox" label="Почта России:" value="44" default="checked"/>
+		<param name="pvz_50" type="checkbox" label="Почта России 1-й класс:" value="50" default="checked"/>
+		<param name="pvz_54" type="checkbox" label="Почта России 1-й класс.:" value="54" default="checked"/>
+		<param name="pvz_55" type="checkbox" label="Почта России.:" value="55" default="checked"/>
+        
+		<param name="pvz_6" type="checkbox" label="СДЭК забор:" value="6" default="checked"/>
+		<param name="pvz_26" type="checkbox" label="СДЭК Посылка склад-дверь:" value="26" default="checked"/>
+		<param name="pvz_25" type="checkbox" label="СДЭК Посылка Самовывоз:" value="25" default="checked"/>
+		<param name="pvz_24" type="checkbox" label="Сити Курьер:" value="24" default="checked"/>
+		
+		<param type="spacer" default="&lt;h4&gt;Курьерская доставка&lt;/h4&gt;" />
+        
+		<param name="courier_33" type="checkbox" label="Aplix:" value="33" default="checked"/>
+		<param name="courier_35" type="checkbox" label="Aplix DPD Consumer:" value="35" default="checked"/>
+		<param name="courier_36" type="checkbox" label="Aplix DPD parcel:" value="36" default="checked"/>
+		<param name="courier_48" type="checkbox" label="Aplix IML курьерская доставка:" value="48" default="checked"/>
+		<param name="courier_37" type="checkbox" label="Aplix IML самовывоз:" value="37" default="checked"/>
+		<param name="courier_38" type="checkbox" label="Aplix PickPoint:" value="38" default="checked"/>
+		<param name="courier_39" type="checkbox" label="Aplix Qiwi:" value="39" default="checked"/>
+		<param name="courier_45" type="checkbox" label="Aplix курьерская доставка:" value="45" default="checked"/>
+		<param name="courier_40" type="checkbox" label="Aplix СДЭК:" value="40" default="checked"/>
+        
+		<param name="courier_4" type="checkbox" label="Boxberry:" value="4" default="checked"/>
+		<param name="courier_21" type="checkbox" label="Boxberry Express" value="21" default="checked"/>
+
+        <param name="courier_29" type="checkbox" label="DPD Classic:" value="29" default="checked"/>
+		<param name="courier_27" type="checkbox" label="DPD Economy:" value="27" default="checked"/>
+		<param name="courier_23" type="checkbox" label="DPD Consumer:" value="23" default="checked"/>
+		<param name="courier_28" type="checkbox" label="DPD Express:" value="28" default="checked"/>
+		<param name="courier_20" type="checkbox" label="DPD Parcel:" value="20" default="checked"/>
+		<param name="courier_32" type="checkbox" label="DPD_pick:" value="32" default="checked"/>
+
+        <param name="courier_30" type="checkbox" label="EMS:" value="30" default="checked"/>
+        <param name="courier_51" type="checkbox" label="EMS Почта России:" value="51" default="checked"/>
+        
+        <param name="courier_52" type="checkbox" label="ЕКБ-доставка забор:" value="52" default="checked"/>
+        <param name="courier_53" type="checkbox" label="ЕКБ-доставка курьер:" value="53" default="checked"/>
+        
+		<param name="courier_31" type="checkbox" label="Grastin:" value="31" default="checked"/>
+		<param name="courier_11" type="checkbox" label="Hermes:" value="11" default="checked"/>
+        
+        <param name="courier_16" type="checkbox" label="IM Logistics Пушкинская:" value="16" default="checked"/>
+		<param name="courier_22" type="checkbox" label="IM Logistics Экспресс:" value="22" default="checked"/>
+        
+		<param name="courier_49" type="checkbox" label="IML Забор:" value="49" default="checked"/>
+		<param name="courier_43" type="checkbox" label="IML курьерская доставка:" value="43" default="checked"/>
+		<param name="courier_42" type="checkbox" label="IML самовывоз:" value="42" default="checked"/>
+		<param name="courier_17" type="checkbox" label="IMLogistics:" value="17" default="checked"/>
+        
+        <param name="courier_34" type="checkbox" label="Lenod:" value="34" default="checked"/>
+        <param name="courier_46" type="checkbox" label="LENOD курьерская служба:" value="46" default="checked"/>
+		
+		<param name="courier_3" type="checkbox" label="Logibox:" value="3" default="checked"/>
+		<param name="courier_14" type="checkbox" label="Maxima Express:" value="14" default="checked"/>
+        
+		<param name="courier_1" type="checkbox" label="PickPoint:" value="1" default="checked"/>
+		<param name="courier_7" type="checkbox" label="QIWI Post:" value="7" default="checked"/>
+        
+		<param name="courier_47" type="checkbox" label="TelePost:" value="47" default="checked"/>
+		<param name="courier_41" type="checkbox" label="Кит:" value="41" default="checked"/>
+		<param name="courier_13" type="checkbox" label="КТС:" value="13" default="checked"/>
+		<param name="courier_44" type="checkbox" label="Почта России:" value="44" default="checked"/>
+        <param name="courier_50" type="checkbox" label="Почта России 1-й класс:" value="50" default="checked"/>
+        <param name="courier_54" type="checkbox" label="Почта России 1-й класс.:" value="54" default="checked"/>
+		<param name="courier_55" type="checkbox" label="Почта России.:" value="55" default="checked"/>
+        
+		<param name="courier_6" type="checkbox" label="СДЭК забор:" value="6" default="checked"/>
+		<param name="courier_26" type="checkbox" label="СДЭК Посылка склад-дверь:" value="26" default="checked"/>
+		<param name="courier_25" type="checkbox" label="СДЭК Посылка Самовывоз:" value="25" default="checked"/>
+		<param name="courier_24" type="checkbox" label="Сити Курьер:" value="24" default="checked"/>
+		
+		<param type="spacer" default="&lt;h2&gt;Способы оплаты&lt;/h2&gt;" />
+		
+		<param name="pvz_payment" type="multi" 
+			label="Оплата на месте при самовывозе (взымается дополнительный наложенный платеж):" />
+		
+		<param name="curier_payment" type="multi" 
+			label="Оплата на месте при курьерской доставке (взымается дополнительный наложенный платеж):" />
+		<param name="custom_points_string" type="textarea"
+            label="Описание собственных служб доставки"
+            description="Для добавления собственных пунктов самовывоза, 
+            последовательно введите данные о пункте самовывоза, 
+            разделяя их ';', в конце ввода поставьте знак '#'"/>
+            
+        <param name="theme" type="list" default="default"
+			label="Тема оформления:">
+			<option value="default">По умолчанию</option>
+			<option value="blue">Синяя</option>
+		</param>
+		
+	</params>
+</extension>
